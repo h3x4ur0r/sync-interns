@@ -1,37 +1,26 @@
-import os
-import openai
-import dotenv
+import random
 
-dotenv.load_dotenv()
+responses = {
+    "hello": ["Hi there!", "Hello!", "Hey!"],
+    "how are you": ["I'm just a bot, but I'm doing fine!", "I'm doing well, thank you!", "I don't have feelings, but I'm here to help!"],
+    "what's your name": ["I'm just a chatbot.", "I don't have a name, I'm a chatbot."],
+    "bye": ["Goodbye!", "See you later!", "Take care!"]
+}
 
-openai.api_key = os.getenv("OPENAI")
+def get_response(message):
+    message = message.lower()
+    
+    for key in responses:
+        if key in message:
+            return random.choice(responses[key])
+    
+    return "I'm not sure how to respond to that."
 
-
-def get_chatbot_response(prompt):
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=prompt,
-        temperature=0.7,
-        max_tokens=150,
-        n=1,
-        stop=None,
-    )
-    return response.choices[0].text.strip()
-
-
-def main():
-    print("Chatbot: Hello! I'm your friendly chatbot. How can I assist you today?")
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() in ["exit", "quit", "bye"]:
-            print("Chatbot: Goodbye!")
-            break
-
-        prompt = f"You: {user_input}\nChatbot:"
-
-        bot_response = get_chatbot_response(prompt)
-        print("Chatbot:", bot_response)
-
-
-if __name__ == "__main__":
-    main()
+print("Chatbot: Hello! How can I assist you today?")
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "exit":
+        print("Chatbot: Goodbye!")
+        break
+    response = get_response(user_input)
+    print("Chatbot:", response)
